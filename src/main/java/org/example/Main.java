@@ -27,6 +27,7 @@ import com.sun.net.httpserver.HttpExchange;
 public class Main {
 
     public static void main(String[] args) throws IOException {
+
         // Set up a basic HTTP server
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
         server.createContext("/readEnterprise", new ReadEnterpriseHandler());
@@ -39,6 +40,15 @@ public class Main {
     static class ReadEnterpriseHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
+            String apiKey = exchange.getRequestHeaders().getFirst("API_KEY");
+            if (apiKey == null || !apiKey.equals(ApiKeyConfig.SECRET_API_KEY)) {
+                String errorResponse = "Unauthorized";
+                exchange.sendResponseHeaders(401, errorResponse.getBytes().length);
+                OutputStream os = exchange.getResponseBody();
+                os.write(errorResponse.getBytes());
+                os.close();
+                return;
+            }
             if ("GET".equals(exchange.getRequestMethod())) {
                 // Parse query parameters
                 Map<String, String> queryParams = parseQueryParams(exchange.getRequestURI().getQuery());
@@ -60,7 +70,6 @@ public class Main {
 
                     // Execute the SOAP service call with parameters
                     String response = callKboService(langue, entrepriseNumber);
-
                     // Send the response
                     exchange.sendResponseHeaders(200, response.getBytes().length);
                     OutputStream os = exchange.getResponseBody();
