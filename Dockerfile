@@ -1,11 +1,12 @@
-FROM maven:3.9.4-eclipse-temurin-21 AS builder
-WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN mvn clean package -DskipTests
-
 FROM eclipse-temurin:21-jre-alpine
+
 WORKDIR /app
-COPY --from=builder /app/target/KboTest-1.0-SNAPSHOT.jar app.jar
+
+# Copier ton JAR compilé localement dans l'image
+COPY target/KboTest-1.0-SNAPSHOT.jar app.jar
+
+# Expose le port 8080 (même si Render utilisera la variable $PORT)
 EXPOSE 8080
+
+# Démarrer l'app avec le port dynamique fourni par Render
 CMD ["sh", "-c", "java -jar app.jar --server.port=$PORT"]
