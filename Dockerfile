@@ -9,4 +9,4 @@ COPY target/KboTest-1.0-SNAPSHOT.jar app.jar
 EXPOSE 8080
 
 # Démarrer l'app avec le port dynamique fourni par Render
-CMD ["sh", "-c", "java -jar app.jar --server.port=$PORT"]
+CMD ["java", "-jar", "app.jar"]
