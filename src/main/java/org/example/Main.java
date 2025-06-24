@@ -113,7 +113,7 @@ public class Main {
         private String callKboService(String langue, int entrepriseNumber) throws MalformedURLException, JsonProcessingException {
             System.out.println("callKboService called with langue=" + langue + ", entrepriseNumber=" + entrepriseNumber);
             SettingsService settingsService = SettingsService.getInstance();
-            String wsaddress = settingsService.getSetting("kbopubws.address");
+            String wsaddress = "https://kbopub-acc.economie.fgov.be/kbopubws110000/services/wsKBOPub?wsdl";
             System.out.println("kbopubws.address: " + wsaddress);
 
             WSKBOPubService webService = new WSKBOPubService(new URL(wsaddress), new QName(
