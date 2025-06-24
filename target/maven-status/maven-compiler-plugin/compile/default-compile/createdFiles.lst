@@ -1,4 +1,5 @@
 org\example\Main$ReadEnterpriseHandler.class
 org\example\Main.class
 org\example\ApiKeyConfig.class
+org\example\Main$NetworkTestHandler.class
 org\example\ApiHandle.class
