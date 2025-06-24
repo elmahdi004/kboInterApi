@@ -37,6 +37,13 @@ public class Main {
         server.setExecutor(null); // Use the default executor
         System.out.println("Server is running on http://localhost:"+port);
         server.start();
+        server.createContext("/", exchange -> {
+            String response = "OK";
+            exchange.sendResponseHeaders(200, response.length());
+            try (OutputStream os = exchange.getResponseBody()) {
+                os.write(response.getBytes());
+            }
+        });
     }
 
     // HTTP Handler for /readEnterprise
