@@ -115,10 +115,14 @@ public class Main {
 //            SettingsService settingsService = SettingsService.getInstance();
             String wsaddress = "https://kbopub-acc.economie.fgov.be/kbopubws110000/services/wsKBOPub?wsdl";
             System.out.println("kbopubws.address: " + wsaddress);
+            System.out.println("About to create WSKBOPubService...");
 
             WSKBOPubService webService = new WSKBOPubService(new URL(wsaddress), new QName(
                     "http://economie.fgov.be/kbopub/webservices/v1", "WSKBOPubService"));
+                    System.out.println("WSKBOPubService created successfully");
+
             WSKBOPub service = webService.getWSKBOPub();
+            System.out.println("WSKBOPub service obtained successfully");
 
             Holder<ReadEnterpriseReplyType> reply = new Holder<>();
             ReadEnterpriseRequestType request = new ReadEnterpriseRequestType();
