@@ -50,8 +50,12 @@ public class Main {
     static class ReadEnterpriseHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
+            System.out.println("Received request to /readEnterprise");
             String apiKey = exchange.getRequestHeaders().getFirst("API_KEY");
+            System.out.println("API_KEY header: " + apiKey);
+
             if (apiKey == null || !apiKey.equals(ApiKeyConfig.SECRET_API_KEY)) {
+                System.out.println("Unauthorized: API key missing or invalid");
                 String errorResponse = "Unauthorized";
                 exchange.sendResponseHeaders(401, errorResponse.getBytes().length);
                 OutputStream os = exchange.getResponseBody();
@@ -59,14 +63,18 @@ public class Main {
                 os.close();
                 return;
             }
+            System.out.println("API key validated");
+
             if ("GET".equals(exchange.getRequestMethod())) {
                 // Parse query parameters
                 Map<String, String> queryParams = parseQueryParams(exchange.getRequestURI().getQuery());
+                System.out.println("Query params: " + queryParams);
 
                 String langue = queryParams.get("langue");
                 String entrepriseNumberStr = queryParams.get("entrepriseNumber");
 
                 if (langue == null || entrepriseNumberStr == null) {
+                    System.out.println("Missing required parameters");
                     String errorResponse = "Missing required parameters: langue and entrepriseNumber.";
                     exchange.sendResponseHeaders(400, errorResponse.getBytes().length);
                     OutputStream os = exchange.getResponseBody();
@@ -77,16 +85,19 @@ public class Main {
 
                 try {
                     int entrepriseNumber = Integer.parseInt(entrepriseNumberStr);
+                    System.out.println("Parsed entrepriseNumber: " + entrepriseNumber);
 
                     // Execute the SOAP service call with parameters
                     String response = callKboService(langue, entrepriseNumber);
+                    System.out.println("SOAP service call response: " + response);
                     // Send the response
                     exchange.sendResponseHeaders(200, response.getBytes().length);
                     OutputStream os = exchange.getResponseBody();
                     os.write(response.getBytes());
                     os.close();
                 } catch (Exception e) {
-                    // Handle errors
+                    System.out.println("Exception in handler: " + e.getMessage());
+                    e.printStackTrace();
                     String errorResponse = "Error: " + e.getMessage();
                     exchange.sendResponseHeaders(500, errorResponse.getBytes().length);
                     OutputStream os = exchange.getResponseBody();
@@ -94,14 +105,16 @@ public class Main {
                     os.close();
                 }
             } else {
-                // Method not allowed
+                System.out.println("Method not allowed: " + exchange.getRequestMethod());
                 exchange.sendResponseHeaders(405, -1);
             }
         }
 
         private String callKboService(String langue, int entrepriseNumber) throws MalformedURLException, JsonProcessingException {
+            System.out.println("callKboService called with langue=" + langue + ", entrepriseNumber=" + entrepriseNumber);
             SettingsService settingsService = SettingsService.getInstance();
             String wsaddress = settingsService.getSetting("kbopubws.address");
+            System.out.println("kbopubws.address: " + wsaddress);
 
             WSKBOPubService webService = new WSKBOPubService(new URL(wsaddress), new QName(
                     "http://economie.fgov.be/kbopub/webservices/v1", "WSKBOPubService"));
