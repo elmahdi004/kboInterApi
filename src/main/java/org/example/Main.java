@@ -29,7 +29,9 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         // Set up a basic HTTP server
-        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+        int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
+
+        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext("/readEnterprise", new ReadEnterpriseHandler());
         server.setExecutor(null); // Use the default executor
         System.out.println("Server is running on http://localhost:8080");
