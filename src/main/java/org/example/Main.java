@@ -34,7 +34,6 @@ public class Main {
         HttpServer server = HttpServer.create(new InetSocketAddress("0.0.0.0", port), 0);
 
         server.createContext("/readEnterprise", new ReadEnterpriseHandler());
-        server.createContext("/test-network", new NetworkTestHandler());
         server.setExecutor(null); // Use the default executor
         System.out.println("Server is running on http://localhost:"+port);
         server.start();
@@ -117,27 +116,32 @@ public class Main {
             String wsaddress = "https://kbopub-acc.economie.fgov.be/kbopubws110000/services/wsKBOPub?wsdl";
             System.out.println("kbopubws.address: " + wsaddress);
             System.out.println("About to create WSKBOPubService...");
-            // WSKBOPubService webService = new WSKBOPubService(new URL(wsaddress), new QName(
-            //         "http://economie.fgov.be/kbopub/webservices/v1", "WSKBOPubService"));
+             WSKBOPubService webService = new WSKBOPubService(new URL(wsaddress), new QName(
+                     "http://economie.fgov.be/kbopub/webservices/v1", "WSKBOPubService"));
 
                     System.out.println("WSKBOPubService created successfully");
 
-//            WSKBOPub service = webService.getWSKBOPub();
+            WSKBOPub service = webService.getWSKBOPub();
             System.out.println("WSKBOPub service obtained successfully");
 
             Holder<ReadEnterpriseReplyType> reply = new Holder<>();
+            System.out.println("1");
             ReadEnterpriseRequestType request = new ReadEnterpriseRequestType();
+            System.out.println("2");
             RequestContextType requestContext = new RequestContextType();
+            System.out.println("3");
             Holder<ReplyContextType> replyContext = new Holder<>();
-
+            System.out.println("4");
             requestContext.setId("a generated uuid");
+            System.out.println("5");
             requestContext.getLanguage().add(langue);
+            System.out.println("6");
             request.setEnterpriseNumber(entrepriseNumber);
-
-//            service.readEnterprise(requestContext, request, reply, replyContext);
-
+            System.out.println("7");
+            service.readEnterprise(requestContext, request, reply, replyContext);
+            System.out.println("8");
             ReplyStatusType replyStatus = replyContext.value.getReplyStatus();
-
+            System.out.println("9");
             System.out.println("Reply code is :" + replyStatus.getCode());
             if (Objects.equals(replyStatus.getCode(), "00001")) {
                 ObjectMapper mapper = new ObjectMapper();
@@ -162,91 +166,5 @@ public class Main {
             return queryParams;
         }
 
-    }
-
-    // HTTP Handler for network connectivity testing
-    static class NetworkTestHandler implements HttpHandler {
-        @Override
-        public void handle(HttpExchange exchange) throws IOException {
-            System.out.println("Testing network connectivity...");
-            
-            StringBuilder result = new StringBuilder();
-            result.append("Network Connectivity Test Results:\n\n");
-            
-            // Test 1: Basic internet connectivity
-            result.append("1. Testing basic internet connectivity...\n");
-            try {
-                URL url = new URL("https://httpbin.org/get");
-                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setConnectTimeout(5000);
-                conn.setReadTimeout(5000);
-                int responseCode = conn.getResponseCode();
-                result.append("   HTTP Status: ").append(responseCode).append(" - ");
-                if (responseCode == 200) {
-                    result.append("SUCCESS ✓\n");
-                } else {
-                    result.append("FAILED ✗\n");
-                }
-                conn.disconnect();
-            } catch (Exception e) {
-                result.append("   FAILED ✗ - ").append(e.getMessage()).append("\n");
-            }
-            
-            // Test 2: Belgian government service WSDL
-            result.append("\n2. Testing Belgian government service WSDL...\n");
-            try {
-                URL url = new URL("https://kbopub-acc.economie.fgov.be/kbopubws110000/services/wsKBOPub?wsdl");
-                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setConnectTimeout(10000);
-                conn.setReadTimeout(10000);
-                int responseCode = conn.getResponseCode();
-                result.append("   HTTP Status: ").append(responseCode).append(" - ");
-                if (responseCode == 200) {
-                    result.append("SUCCESS ✓\n");
-                } else {
-                    result.append("FAILED ✗\n");
-                }
-                conn.disconnect();
-            } catch (Exception e) {
-                result.append("   FAILED ✗ - ").append(e.getMessage()).append("\n");
-            }
-            
-            // Test 3: Google (another external service)
-            result.append("\n3. Testing Google connectivity...\n");
-            try {
-                URL url = new URL("https://www.google.com");
-                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setConnectTimeout(5000);
-                conn.setReadTimeout(5000);
-                int responseCode = conn.getResponseCode();
-                result.append("   HTTP Status: ").append(responseCode).append(" - ");
-                if (responseCode == 200) {
-                    result.append("SUCCESS ✓\n");
-                } else {
-                    result.append("FAILED ✗\n");
-                }
-                conn.disconnect();
-            } catch (Exception e) {
-                result.append("   FAILED ✗ - ").append(e.getMessage()).append("\n");
-            }
-            
-            // Test 4: DNS resolution
-            result.append("\n4. Testing DNS resolution...\n");
-            try {
-                java.net.InetAddress address = java.net.InetAddress.getByName("kbopub-acc.economie.fgov.be");
-                result.append("   IP Address: ").append(address.getHostAddress()).append(" - SUCCESS ✓\n");
-            } catch (Exception e) {
-                result.append("   FAILED ✗ - ").append(e.getMessage()).append("\n");
-            }
-            
-            String response = result.toString();
-            exchange.sendResponseHeaders(200, response.getBytes().length);
-            try (OutputStream os = exchange.getResponseBody()) {
-                os.write(response.getBytes());
-            }
-        }
     }
 }
