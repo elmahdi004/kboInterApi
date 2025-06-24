@@ -116,12 +116,17 @@ public class Main {
             String wsaddress = "https://kbopub-acc.economie.fgov.be/kbopubws110000/services/wsKBOPub?wsdl";
             System.out.println("kbopubws.address: " + wsaddress);
             System.out.println("About to create WSKBOPubService...");
-
+try{
             WSKBOPubService webService = new WSKBOPubService(new URL(wsaddress), new QName(
                     "http://economie.fgov.be/kbopub/webservices/v1", "WSKBOPubService"));
+} catch (Exception e) {
+    System.out.println("Exception creating SOAP service: " + e.getMessage());
+    e.printStackTrace();
+    throw e;
+}
                     System.out.println("WSKBOPubService created successfully");
 
-            WSKBOPub service = webService.getWSKBOPub();
+//            WSKBOPub service = webService.getWSKBOPub();
             System.out.println("WSKBOPub service obtained successfully");
 
             Holder<ReadEnterpriseReplyType> reply = new Holder<>();
@@ -133,7 +138,7 @@ public class Main {
             requestContext.getLanguage().add(langue);
             request.setEnterpriseNumber(entrepriseNumber);
 
-            service.readEnterprise(requestContext, request, reply, replyContext);
+//            service.readEnterprise(requestContext, request, reply, replyContext);
 
             ReplyStatusType replyStatus = replyContext.value.getReplyStatus();
 
