@@ -31,10 +31,11 @@ public class Main {
         // Set up a basic HTTP server
         int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
 
-        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress("0.0.0.0", port), 0);
+
         server.createContext("/readEnterprise", new ReadEnterpriseHandler());
         server.setExecutor(null); // Use the default executor
-        System.out.println("Server is running on http://localhost:8080");
+        System.out.println("Server is running on http://localhost:"+port);
         server.start();
     }
 
