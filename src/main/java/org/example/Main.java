@@ -116,12 +116,12 @@ public class Main {
             String wsaddress = "https://kbopub-acc.economie.fgov.be/kbopubws110000/services/wsKBOPub?wsdl";
             System.out.println("kbopubws.address: " + wsaddress);
             System.out.println("About to create WSKBOPubService...");
-             WSKBOPubService webService = new WSKBOPubService(new URL(wsaddress), new QName(
-                     "http://economie.fgov.be/kbopub/webservices/v1", "WSKBOPubService"));
+//             WSKBOPubService webService = new WSKBOPubService(new URL(wsaddress), new QName(
+//                     "http://economie.fgov.be/kbopub/webservices/v1", "WSKBOPubService"));
 
                     System.out.println("WSKBOPubService created successfully");
 
-            WSKBOPub service = webService.getWSKBOPub();
+//            WSKBOPub service = webService.getWSKBOPub();
             System.out.println("WSKBOPub service obtained successfully");
 
             Holder<ReadEnterpriseReplyType> reply = new Holder<>();
@@ -138,7 +138,7 @@ public class Main {
             System.out.println("6");
             request.setEnterpriseNumber(entrepriseNumber);
             System.out.println("7");
-            service.readEnterprise(requestContext, request, reply, replyContext);
+//            service.readEnterprise(requestContext, request, reply, replyContext);
             System.out.println("8");
             ReplyStatusType replyStatus = replyContext.value.getReplyStatus();
             System.out.println("9");
