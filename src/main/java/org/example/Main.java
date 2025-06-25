@@ -3,7 +3,7 @@ package org.example;
 import be.fgov.economie.kbopub.webservices.v1.WSKBOPub;
 import be.fgov.economie.kbopub.webservices.v1.WSKBOPubService;
 import be.fgov.economie.kbopub.webservices.v1.messages.*;
-import be.fgov.economie.kbopub.wsclient.service.SettingsService;
+//import be.fgov.economie.kbopub.wsclient.service.SettingsService;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Holder;

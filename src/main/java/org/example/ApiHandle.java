@@ -4,7 +4,7 @@ import be.fgov.economie.kbopub.webservices.v1.WSKBOPub;
 import be.fgov.economie.kbopub.webservices.v1.WSKBOPubService;
 import be.fgov.economie.kbopub.webservices.v1.datamodel.EnterpriseType;
 import be.fgov.economie.kbopub.webservices.v1.messages.*;
-import be.fgov.economie.kbopub.wsclient.service.SettingsService;
+//import be.fgov.economie.kbopub.wsclient.service.SettingsService;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -17,8 +17,9 @@ import java.net.URL;
 public class ApiHandle implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        SettingsService settingsService = SettingsService.getInstance();
-        String wsaddress = settingsService.getSetting("kbopubws.address");
+//        SettingsService settingsService = SettingsService.getInstance();
+//        String wsaddress = settingsService.getSetting("kbopubws.address");
+        String wsaddress = "https://kbopub-acc.economie.fgov.be/kbopubws110000/services/wsKBOPub?wsdl";
         WSKBOPubService webService = new WSKBOPubService(new URL(wsaddress), new QName(
                 "http://economie.fgov.be/kbopub/webservices/v1", "WSKBOPubService"));
         WSKBOPub service = webService.getWSKBOPub();
